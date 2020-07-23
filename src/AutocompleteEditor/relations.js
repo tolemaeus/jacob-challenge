@@ -17,6 +17,12 @@ const relations = [
   {
     name: 'Oculus',
   },
+  {
+    name: 'Testing spaces',
+  },
+  {
+    name: 'The Power of Now',
+  },
 ];
 
 export default relations;
