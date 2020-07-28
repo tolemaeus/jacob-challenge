@@ -35,7 +35,7 @@ export default class AutocompleteEditor extends Component {
       entityMutability: 'IMMUTABLE',
       mentionPrefix: '@',
       mentionTrigger: '@',
-      // supportWhitespace: true
+      supportWhitespace: true
     });
 
     this.hashtagPlugin = createMentionPlugin({
@@ -51,7 +51,7 @@ export default class AutocompleteEditor extends Component {
       entityMutability: 'IMMUTABLE',
       mentionPrefix: '<>',
       mentionTrigger: '<>',
-      // supportWhitespace: true
+      supportWhitespace: true
     });
 
     this.onSearchChange = this.onSearchChange.bind(this);
