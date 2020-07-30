@@ -88,19 +88,6 @@ export default class AutocompleteEditor extends Component {
     }
   }
 
-  // onAddMention = () => {
-  //   // get the mention object selected
-  //   console.log("INSIDE onAddMention");
-  // }
-
-  // onOpen = (name, data) => {
-  //   console.log("INSIDE onOpen: ", name, ", data: ", data);
-  // }
-
-  // onClose = (name, data) => {
-  //   console.log("INSIDE onClose: ", name, ", data: ", data);
-  // }
-
   handleEditorChange(editorState) {
     this.setState({ editorState });
   }
@@ -126,33 +113,18 @@ export default class AutocompleteEditor extends Component {
         />
         <PersonSuggestions
           onSearchChange={({ value }) => this.onSearchChange(value, 'person', mentions)}
-          suggestions={(() => {
-            // console.log("INSIDE PERSON SUGGESTIONS");
-            return this.state.personSuggestions;
-          })()}
+          suggestions={this.state.personSuggestions}
           onAddMention={this.onAddMention}
-          // onOpen={() => this.onOpen('person', mentions)}
-          // onClose={() => this.onClose('person', mentions)}
         />
         <HashtagSuggestions
           onSearchChange={({ value }) => this.onSearchChange(value, 'hashtag', hashtags)}
-          suggestions={(() => {
-            // console.log("INSIDE HASHTAG SUGGESTIONS: ", this.state.hashtagSuggestions);
-            return this.state.hashtagSuggestions;
-          })()}
+          suggestions={this.state.hashtagSuggestions}
           onAddMention={this.onAddMention}
-          // onOpen={() => this.onOpen('hashtag', hashtags)}
-          // onClose={() => this.onClose('hashtag', hashtags)}
         />
         <RelationSuggestions
           onSearchChange={({ value }) => this.onSearchChange(value, 'relation', relations)}
-          suggestions={(() => {
-            // console.log("INSIDE RELATION SUGGESTIONS");
-            return this.state.relationSuggestions;
-          })()}
+          suggestions={this.state.relationSuggestions}
           onAddMention={this.onAddMention}
-          // onOpen={() => this.onOpen('relation', relations)}
-          // onClose={() => this.onClose('relation', relations)}
         />
       </div>
     );
