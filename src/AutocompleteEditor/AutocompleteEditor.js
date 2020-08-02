@@ -67,18 +67,27 @@ export default class AutocompleteEditor extends Component {
   };
 
   onSearchChange(value, name, data) {
+    // Pop previous intermediate autocomplete value
+    const lastItem = (data.length > 0) ? data[data.length - 1] : null;
+    if (lastItem !== null && 'inProg' in lastItem) data.pop();
+
+    // Make sure to not push duplicates
+    let toPush = value !== '' && data.filter(e => e.name === value).length === 0;
     switch (name) {
       case 'person':
+        if (toPush) data.push({name: value, link: '', avatar: '', inProg: true});
         this.setState({
           personSuggestions: prefixSuggestionsFilter(value, data),
         });
         break;
       case 'hashtag':
+        if (toPush) data.push({name: value, inProg: true});
         this.setState({
           hashtagSuggestions: prefixSuggestionsFilter(value, data),
         });
         break;
       case 'relation':
+        if (toPush) data.push({name: value, inProg: true});
         this.setState({
           relationSuggestions: prefixSuggestionsFilter(value, data),
         });
@@ -94,6 +103,44 @@ export default class AutocompleteEditor extends Component {
 
   handleEditorClick() {
     this.editor.focus();
+  }
+
+  onAddMention(value, name, data) {
+    if (data.filter(e => e.name === value.name && !('inProg' in e)).length > 0) {
+      return;
+    }
+
+    // Delete inProg flag as way to commit new autocomplete entry
+    const lastItem = (data.length > 0) ? data[data.length - 1] : null;
+    if (lastItem !== null && 'inProg' in lastItem) {
+      delete lastItem.inProg;
+    }
+    let dedupData = this.removeDuplicatesFromData(data);
+    switch (name) {
+      case 'person':
+        this.setState({ personSuggestions: dedupData });
+        break;
+      case 'hashtag':
+        this.setState({ hashtagSuggestions: dedupData });
+        break;
+      case 'relation':
+        this.setState({ relationSuggestions: dedupData });
+        break;
+      default:
+        return;
+    }
+  }
+  
+  removeDuplicatesFromData(data) {
+    let st = new Set();
+    var i = data.length;
+    while (i--) {
+        if (st.has(data[i].name)) { 
+          data.splice(i, 1);
+        } 
+        st.add(data[i].name);
+    }
+    return data;
   }
 
   render() {
@@ -114,17 +161,17 @@ export default class AutocompleteEditor extends Component {
         <PersonSuggestions
           onSearchChange={({ value }) => this.onSearchChange(value, 'person', mentions)}
           suggestions={this.state.personSuggestions}
-          onAddMention={this.onAddMention}
+          onAddMention={( value ) => this.onAddMention(value, 'person', mentions)}
         />
         <HashtagSuggestions
           onSearchChange={({ value }) => this.onSearchChange(value, 'hashtag', hashtags)}
           suggestions={this.state.hashtagSuggestions}
-          onAddMention={this.onAddMention}
+          onAddMention={( value ) => this.onAddMention(value, 'hashtag', hashtags)}
         />
         <RelationSuggestions
           onSearchChange={({ value }) => this.onSearchChange(value, 'relation', relations)}
           suggestions={this.state.relationSuggestions}
-          onAddMention={this.onAddMention}
+          onAddMention={( value ) => this.onAddMention(value, 'relation', relations)}
         />
       </div>
     );

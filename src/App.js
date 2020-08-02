@@ -6,7 +6,6 @@ function App() {
   return (
     <div className="App">
       <div className="RichEditor-root">
-        {/* <MyEditor /> */}
         <AutocompleteEditor />
       </div>
     </div>

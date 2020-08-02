@@ -16,7 +16,7 @@ const hashtags = [
   },
   {
     name: 'rock',
-  },
+  }
 ];
 
 export default hashtags;

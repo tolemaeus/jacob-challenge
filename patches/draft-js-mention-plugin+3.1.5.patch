@@ -1,3 +1,18 @@
+diff --git a/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js b/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js
+index ffabd49..30952d4 100644
+--- a/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js
++++ b/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js
+@@ -284,6 +284,10 @@ var MentionSuggestions = exports.MentionSuggestions = function (_Component) {
+         if (keyboardEvent.keyCode === 9) {
+           _this.onTab(keyboardEvent);
+         }
++        // space
++        if (keyboardEvent.keyCode === 32 && !_this.props.supportWhitespace) {
++          _this.onTab(keyboardEvent);
++        }
+       };
+ 
+       var descendant = 'mention-option-' + _this.key + '-' + _this.state.focusedOptionIndex;
 diff --git a/node_modules/draft-js-mention-plugin/lib/mentionSuggestionsStrategy.js b/node_modules/draft-js-mention-plugin/lib/mentionSuggestionsStrategy.js
 index 03cba8c..767e618 100644
 --- a/node_modules/draft-js-mention-plugin/lib/mentionSuggestionsStrategy.js
