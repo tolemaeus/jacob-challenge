@@ -13,6 +13,19 @@ index ffabd49..30952d4 100644
        };
  
        var descendant = 'mention-option-' + _this.key + '-' + _this.state.focusedOptionIndex;
+diff --git a/node_modules/draft-js-mention-plugin/lib/defaultRegExp.js b/node_modules/draft-js-mention-plugin/lib/defaultRegExp.js
+index 6f00958..1f4f919 100644
+--- a/node_modules/draft-js-mention-plugin/lib/defaultRegExp.js
++++ b/node_modules/draft-js-mention-plugin/lib/defaultRegExp.js
+@@ -3,7 +3,7 @@
+ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+-exports.default = '[' + '\\w-' +
++exports.default = '[' + '\\w-\\\\\\.,\\[\\]\\{\\};\\:\'\\"\\/\\?\\>\\<\\|=\\+\\`\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\~' +
+ // Latin-1 Supplement (letters only) - https://en.wikipedia.org/wiki/List_of_Unicode_characters#Latin-1_Supplement
+ '\xC0-\xD6' + '\xD8-\xF6' + '\xF8-\xFF' +
+ // Latin Extended-A (without deprecated character) - https://en.wikipedia.org/wiki/List_of_Unicode_characters#Latin_Extended-A
 diff --git a/node_modules/draft-js-mention-plugin/lib/index.js b/node_modules/draft-js-mention-plugin/lib/index.js
 index b48c33c..ebb4ef4 100644
 --- a/node_modules/draft-js-mention-plugin/lib/index.js
