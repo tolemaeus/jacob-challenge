@@ -53,3 +53,20 @@ index 03cba8c..767e618 100644
  
    return function (contentBlock, callback) {
      findWithRegex(MENTION_REGEX, contentBlock, callback);
+diff --git a/node_modules/draft-js-mention-plugin/lib/modifiers/addMention.js b/node_modules/draft-js-mention-plugin/lib/modifiers/addMention.js
+index ad92dc4..33c9139 100644
+--- a/node_modules/draft-js-mention-plugin/lib/modifiers/addMention.js
++++ b/node_modules/draft-js-mention-plugin/lib/modifiers/addMention.js
+@@ -41,11 +41,7 @@ var addMention = function addMention(editorState, mention, mentionPrefix, mentio
+ 
+   // If the mention is inserted at the end, a space is appended right after for
+   // a smooth writing experience.
+-  var blockKey = mentionTextSelection.getAnchorKey();
+-  var blockSize = editorState.getCurrentContent().getBlockForKey(blockKey).getLength();
+-  if (blockSize === end) {
+-    mentionReplacedContent = _draftJs.Modifier.insertText(mentionReplacedContent, mentionReplacedContent.getSelectionAfter(), ' ');
+-  }
++  mentionReplacedContent = _draftJs.Modifier.insertText(mentionReplacedContent, mentionReplacedContent.getSelectionAfter(), ' ');
+ 
+   var newEditorState = _draftJs.EditorState.push(editorState, mentionReplacedContent, 'insert-mention');
+   return _draftJs.EditorState.forceSelection(newEditorState, mentionReplacedContent.getSelectionAfter());
