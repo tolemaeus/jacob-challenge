@@ -16,6 +16,21 @@ const prefixSuggestionsFilter = (searchValue, suggestions) => {
   return filteredSuggestions.slice(0, filteredSuggestions.length);
 };
 
+const styleMap = {
+  'STRIKETHROUGH': {
+    textDecoration: 'line-through',
+  },
+  'WHITEBG': {
+    background: '#ffffff',
+  },
+  'COLOR': {
+    color: '#000000',
+  },
+  'CURSOR': {
+    cursor: 'text',
+  }
+};
+
 export default class AutocompleteEditor extends Component {
 
   constructor(props) {
@@ -63,7 +78,7 @@ export default class AutocompleteEditor extends Component {
     if (lastItem !== null && 'inProg' in lastItem) data.pop();
 
     // Make sure to not push duplicates
-    let toPush = value !== '' && data.filter(e => e.name === value).length === 0;
+    let toPush = data.filter(e => e.name === value).length === 0;
     switch (name) {
       case 'person':
         if (toPush) data.push({name: value, link: '', avatar: '', inProg: true});
@@ -148,6 +163,7 @@ export default class AutocompleteEditor extends Component {
           onChange={this.handleEditorChange}
           plugins={plugins}
           ref={(element) => { this.editor = element; }}
+          customStyleMap={styleMap}
         />
         <PersonSuggestions
           onSearchChange={({ value }) => this.onSearchChange(value, 'person', mentions)}

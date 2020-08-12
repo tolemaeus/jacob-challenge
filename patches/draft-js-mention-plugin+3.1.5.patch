@@ -1,8 +1,43 @@
 diff --git a/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js b/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js
-index ffabd49..30952d4 100644
+index ffabd49..68ba5b7 100644
 --- a/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js
 +++ b/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js
-@@ -284,6 +284,10 @@ var MentionSuggestions = exports.MentionSuggestions = function (_Component) {
+@@ -43,6 +43,8 @@ var _defaultEntryComponent = require('./Entry/defaultEntryComponent');
+ 
+ var _defaultEntryComponent2 = _interopRequireDefault(_defaultEntryComponent);
+ 
++var _immutable = require('immutable');
++
+ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+ 
+ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+@@ -223,14 +225,19 @@ var MentionSuggestions = exports.MentionSuggestions = function (_Component) {
+     }, _this.onEscape = function (keyboardEvent) {
+       keyboardEvent.preventDefault();
+       
+-      var activeOffsetKey = _this.lastSelectionIsInsideWord.filter(function (value) {
+-        return value === true;
+-      }).keySeq().first();
+-      _this.props.store.escapeSearch(activeOffsetKey);
++      var newEditorState = (0, _addMention2.default)(
++        _this.props.store.getEditorState(), 
++        _this.props.suggestions[_this.props.suggestions.length - 1], 
++        _this.props.mentionPrefix, 
++        _this.props.mentionTrigger, 
++        "MUTABLE",
++        _immutable.OrderedSet.of('WHITEBG', 'COLOR', 'CURSOR')
++      );
++
++      _this.props.store.resetEscapedSearch();
+       _this.closeDropdown();
+ 
+-      // to force a re-render of the outer component to change the aria props
+-      _this.props.store.setEditorState(_this.props.store.getEditorState());
++      _this.props.store.setEditorState(newEditorState);
+     }, _this.onMentionSelect = function (mention) {
+       // Note: This can happen in case a user typed @xxx (invalid mention) and
+       // then hit Enter. Then the mention will be undefined.
+@@ -284,6 +291,10 @@ var MentionSuggestions = exports.MentionSuggestions = function (_Component) {
          if (keyboardEvent.keyCode === 9) {
            _this.onTab(keyboardEvent);
          }
@@ -54,10 +89,26 @@ index 03cba8c..767e618 100644
    return function (contentBlock, callback) {
      findWithRegex(MENTION_REGEX, contentBlock, callback);
 diff --git a/node_modules/draft-js-mention-plugin/lib/modifiers/addMention.js b/node_modules/draft-js-mention-plugin/lib/modifiers/addMention.js
-index ad92dc4..33c9139 100644
+index ad92dc4..7298bb1 100644
 --- a/node_modules/draft-js-mention-plugin/lib/modifiers/addMention.js
 +++ b/node_modules/draft-js-mention-plugin/lib/modifiers/addMention.js
-@@ -41,11 +41,7 @@ var addMention = function addMention(editorState, mention, mentionPrefix, mentio
+@@ -16,7 +16,7 @@ var _getTypeByTrigger2 = _interopRequireDefault(_getTypeByTrigger);
+ 
+ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+ 
+-var addMention = function addMention(editorState, mention, mentionPrefix, mentionTrigger, entityMutability) {
++var addMention = function addMention(editorState, mention, mentionPrefix, mentionTrigger, entityMutability, inlineStyles = null) {
+   var contentStateWithEntity = editorState.getCurrentContent().createEntity((0, _getTypeByTrigger2.default)(mentionTrigger), entityMutability, {
+     mention: mention
+   });
+@@ -36,16 +36,13 @@ var addMention = function addMention(editorState, mention, mentionPrefix, mentio
+     focusOffset: end
+   });
+ 
+-  var mentionReplacedContent = _draftJs.Modifier.replaceText(editorState.getCurrentContent(), mentionTextSelection, '' + mentionPrefix + mention.name, null, // no inline style needed
++  var mentionReplacedContent = _draftJs.Modifier.replaceText(editorState.getCurrentContent(), mentionTextSelection, '' + mentionPrefix + mention.name, 
++  inlineStyles,
+   entityKey);
  
    // If the mention is inserted at the end, a space is appended right after for
    // a smooth writing experience.
@@ -70,3 +121,16 @@ index ad92dc4..33c9139 100644
  
    var newEditorState = _draftJs.EditorState.push(editorState, mentionReplacedContent, 'insert-mention');
    return _draftJs.EditorState.forceSelection(newEditorState, mentionReplacedContent.getSelectionAfter());
+diff --git a/node_modules/draft-js-mention-plugin/lib/plugin.css b/node_modules/draft-js-mention-plugin/lib/plugin.css
+index 6b7eb70..cd03892 100644
+--- a/node_modules/draft-js-mention-plugin/lib/plugin.css
++++ b/node_modules/draft-js-mention-plugin/lib/plugin.css
+@@ -3,8 +3,6 @@
+   cursor: pointer;
+   display: inline-block;
+   background: #e6f3ff;
+-  padding-left: 2px;
+-  padding-right: 2px;
+   border-radius: 2px;
+   text-decoration: none;
+ }
